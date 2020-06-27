@@ -1,10 +1,14 @@
 require('dotenv').config()
 const { TruffleProvider } = require('@harmony-js/core')
-const account_1_mnemonic = process.env.MNEMONIC
-const account_1_private_key = process.env.PRIVATE_KEY
-const testnet_url = process.env.TESTNET_URL
+const regPrivateKey = process.env.REG_PRIVATE_KEY
+const accPrivateKey = process.env.ACC_PRIVATE_KEY
+const testnetURL = process.env.TESTNET_URL
 gasLimit = process.env.GAS_LIMIT
 gasPrice = process.env.GAS_PRICE
+
+let args = require('minimist')(process.argv.slice(2), {
+  boolean: ['account', 'registry'],
+})
 
 module.exports = {
   networks: {
@@ -12,13 +16,18 @@ module.exports = {
       network_id: '2',
       provider: () => {
         const truffleProvider = new TruffleProvider(
-            testnet_url,
-            { memonic: account_1_mnemonic },
+            testnetURL,
+            { memonic: '' },
             { shardID: 0, chainId: 2 },
             { gasLimit: gasLimit, gasPrice: gasPrice},
         );
-        const newAcc = truffleProvider.addByPrivateKey(account_1_private_key);
-        truffleProvider.setSigner(newAcc);
+        let accountKS = truffleProvider.addByPrivateKey(accPrivateKey)
+        let registryKS = truffleProvider.addByPrivateKey(regPrivateKey)
+        if (args['registry']) {
+          truffleProvider.setSigner(registryKS)
+        } else {
+          truffleProvider.setSigner(accountKS)
+        }
         return truffleProvider;
       },
     },
