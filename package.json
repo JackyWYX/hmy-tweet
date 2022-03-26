@@ -11,7 +11,7 @@
     "artifacts": "0.0.1",
     "dotenv": "^8.1.0",
     "filereader": "^0.10.3",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "openzeppelin-solidity": "^2.2.0",
     "tslib": "^1.10.0"
   }
